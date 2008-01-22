@@ -41,4 +41,9 @@ end
 
 path = OPTIONS[:path]
 
-# do stuff
+# all good, lets go
+
+require 'airbrush'
+
+server = Airbrush::Server.new(OPTIONS)
+server.start
