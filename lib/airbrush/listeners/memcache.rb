@@ -35,7 +35,7 @@ module Airbrush
             @handler.process op[:command], op[:args]
           rescue Exception => e
             # REVISIT: log bad command
-            puts "Received error during handler #{e}"
+            puts "Received error during handler '#{e}'"
           end
       
         end
