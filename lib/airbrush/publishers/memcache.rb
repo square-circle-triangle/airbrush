@@ -5,8 +5,8 @@ module Airbrush
     class Memcache < Publisher
       attr_reader :host
       
-      def initialize
-        @host = '192.168.1.1:22122'
+      def initialize(host)
+        @host = host
       end
 
       def publish(results)

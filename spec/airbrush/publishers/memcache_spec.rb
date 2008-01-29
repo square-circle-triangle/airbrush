@@ -4,27 +4,26 @@ require 'starling'
 describe Airbrush::Publishers::Memcache, 'when created' do
   
   before do
-    @memcache = Airbrush::Publishers::Memcache.new
+    @host = 'host'
+    @memcache = Airbrush::Publishers::Memcache.new(@host)
   end
 
   it 'should configure access to the remote memcache server host' do
-    @memcache.host.should_not be_nil
-  end
-  
-  # future
-  it 'should accept a configurable memcache host'
+    @memcache.host.should == @host
+  end  
   
 end
 
 describe Airbrush::Publishers::Memcache, 'when publishing' do
   
   before do
+    @host = 'host'
     @server = mock(MemCache)
     @server.stub!(:set).and_return
     MemCache.stub!(:new).and_return(@server)
     @results = "results"
     
-    @memcache = Airbrush::Publishers::Memcache.new
+    @memcache = Airbrush::Publishers::Memcache.new(@host)
   end
 
   it 'should connect to the remote memcache server' do
