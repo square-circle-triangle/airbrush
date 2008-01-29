@@ -4,7 +4,7 @@ module Airbrush
     
     def initialize(context = {})
       @listener = Airbrush::Listeners::Memcache.new(context[:memcache])
-      @listener.handler = Handler.new(Processors::ImageMagick.new, Publishers::Memcache.new(context[:memcache]))      
+      @listener.handler = Handler.new(Processors::Rmagick.new, Publishers::Memcache.new(context[:memcache]))      
     end
     
     def start

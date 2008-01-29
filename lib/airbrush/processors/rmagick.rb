@@ -2,7 +2,7 @@ require 'RMagick'
 
 module Airbrush
   module Processors
-    class ImageMagick < Processor
+    class Rmagick < Processor
       def resize(image, width, height)
         img = Magick::Image.read(image)
         img.change_geometry("#{width}x#{height}") { |cols, rows, image| img.resize!(cols, rows) }
