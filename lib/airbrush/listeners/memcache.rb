@@ -8,9 +8,9 @@ module Airbrush
       
       attr_reader :host, :poll_frequency
       
-      def initialize
-        @poll_frequency = DEFAULT_POLL_FREQUENCY
-        @host = '127.0.0.1:22122' # REVISIT: have to configure detection of memcache host (dnssd or command line option)
+      def initialize(host, frequency = DEFAULT_POLL_FREQUENCY)
+        @host = host
+        @poll_frequency = frequency
       end
     
       def start
