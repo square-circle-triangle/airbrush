@@ -3,13 +3,16 @@ require 'memcache'
 module Airbrush
   module Publishers
     class Memcache < Publisher
+      attr_reader :host
+      
       def initialize
-        @queue = MemCache.new('192.168.1.1:22122')
+        @host = '192.168.1.1:22122'
       end
 
       def publish(results)
         # need to calculate an outboue queue name somehow, client will also need this to get the results
-        @queue.set('my result', results)
+        queue = MemCache.new(@host)
+        queue.set('my result', results)
       end
     end
   end
