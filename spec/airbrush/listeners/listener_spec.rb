@@ -11,4 +11,8 @@ describe Airbrush::Listeners::Listener, 'when created' do
     @listener.handler.should_not be_nil
   end
   
+  it 'should raise an error if start is attempted (since its an abstract class)' do
+    lambda { @listener.start }.should raise_error
+  end
+  
 end
