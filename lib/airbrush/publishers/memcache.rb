@@ -12,7 +12,7 @@ module Airbrush
       def publish(results)
         # need to calculate an outboue queue name somehow, client will also need this to get the results
         queue = MemCache.new(@host)
-        queue.set('my result', results)
+        queue.set('result-queue', results)
       end
     end
   end
