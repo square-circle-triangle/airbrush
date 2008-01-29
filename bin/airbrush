@@ -11,25 +11,29 @@ end
 
 require 'optparse'
 
-# NOTE: the option -p/--path= is given as an example, and should probably be replaced in your application.
-
 OPTIONS = {
-  :path     => '~'
+  :memcache => '127.0.0.1:22122',
+  :frequency => 2  
 }
-MANDATORY_OPTIONS = %w(  )
+MANDATORY_OPTIONS = %w( )
 
 parser = OptionParser.new do |opts|
   opts.banner = <<BANNER
-This application is wonderful because...
+Airbrush is a dedicated job queue based image processor. Commands are added to the queue via memcache, and results posted back
+via memcache. This portion of airbrush is the server component, please see the examples are of the gem for how to post and
+receive results using an example client.
 
 Usage: #{File.basename($0)} [options]
 
 Options are:
 BANNER
   opts.separator ""
-  opts.on("-p", "--path=PATH", String,
-          "The root path for selecting files",
-          "Default: ~") { |OPTIONS[:path]| }
+  opts.on("-m", "--memcache=HOST", String,
+          "The address of the memcache host to connect to",
+          "Default: #{OPTIONS[:memcache]}") { |OPTIONS[:memcache]| }
+  opts.on("-f", "--frequency=SECONDS", String,
+          "How often the remote memcache server is polled for incoming jobs, units of seconds",
+          "Default: #{OPTIONS[:frequency]}") { |OPTIONS[:frequency]| }
   opts.on("-h", "--help",
           "Show this help message.") { puts opts; exit }
   opts.parse!(ARGV)
@@ -39,11 +43,13 @@ BANNER
   end
 end
 
-path = OPTIONS[:path]
-
 # all good, lets go
 
 require 'airbrush'
+require 'daemons'
+
+# Become a daemon
+#Daemons.daemonize
 
 server = Airbrush::Server.new(OPTIONS)
 server.start
