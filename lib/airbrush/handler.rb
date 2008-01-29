@@ -11,8 +11,8 @@ module Airbrush
     end
 
     def process(command, args)
-      @publisher.publish @processor.send(command, args)
+      @publisher.publish @processor.dispatch(command, args)
     end
-    
+
   end
 end

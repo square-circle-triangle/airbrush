@@ -16,7 +16,7 @@ describe Airbrush::Handler, 'when processing a request' do
   
   before do
     @processor = mock(Airbrush::Processors::Processor)
-    @processor.stub!(:send).and_return(true)
+    @processor.stub!(:dispatch).and_return(true)
     
     @publisher = mock(Airbrush::Publishers::Publisher)
     @publisher.stub!(:publish).and_return
@@ -28,7 +28,7 @@ describe Airbrush::Handler, 'when processing a request' do
   end
   
   it 'should pass the request to the processor' do
-    @processor.should_receive(:send).with(@command, @args).and_return(true)
+    @processor.should_receive(:dispatch).with(@command, @args).and_return(true)
     @handler.process @command, @args
   end
   
