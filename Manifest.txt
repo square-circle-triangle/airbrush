@@ -14,7 +14,7 @@ lib/airbrush/listeners/memcache.rb
 lib/airbrush/listeners/socket.rb
 lib/airbrush/listeners/webservice.rb
 lib/airbrush/processors/core_image.rb
-lib/airbrush/processors/image_magick.rb
+lib/airbrush/processors/rmagick.rb
 lib/airbrush/processors/processor.rb
 lib/airbrush/publishers/http.rb
 lib/airbrush/publishers/memcache.rb
