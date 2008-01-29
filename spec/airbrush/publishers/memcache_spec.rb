@@ -34,7 +34,7 @@ describe Airbrush::Publishers::Memcache, 'when publishing' do
   it 'should calculate a unique memcache queue name for publishing results'
   
   it 'should publish the given results to the remote memcache server' do
-    @server.should_receive(:set).with('my result', @results).and_return
+    @server.should_receive(:set).with('result-queue', @results).and_return
     @memcache.publish(@results)
   end
   
