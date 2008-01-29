@@ -8,8 +8,8 @@ require 'active_support'
 Dependencies.load_paths << File.dirname(__FILE__)
 
 # for the moment lets log dependency loading
-Dependencies::RAILS_DEFAULT_LOGGER = Logger.new($stdout)
-Dependencies.log_activity = true
+#Dependencies::RAILS_DEFAULT_LOGGER = Logger.new($stdout)
+#Dependencies.log_activity = true
 
 module Airbrush
 end
