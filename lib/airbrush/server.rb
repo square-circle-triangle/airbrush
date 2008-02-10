@@ -3,8 +3,11 @@ module Airbrush
     attr_reader :listener
     
     def initialize(context = {})
-      @listener = Airbrush::Listeners::Memcache.new(context[:memcache])
-      @listener.handler = Handler.new(Processors::Rmagick.new, Publishers::Memcache.new(context[:memcache]))      
+      memcache_host = context[:memcache]
+      memcache_poll = context[:frequency]
+      
+      @listener = Airbrush::Listeners::Memcache.new(memcache_host, memcache_poll)
+      @listener.handler = Handler.new(Processors::Rmagick.new, Publishers::Memcache.new(memcache_host))
     end
     
     def start

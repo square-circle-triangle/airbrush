@@ -18,7 +18,7 @@ module Airbrush
         
         loop do
           process(starling)
-          sleep @poll_frequency # REVISIT: configurable
+          sleep @poll_frequency
         end
       end
       
