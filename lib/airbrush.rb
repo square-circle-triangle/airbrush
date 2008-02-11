@@ -16,6 +16,6 @@ end
 
 class Object
   def log
-    @log ||= Logger.new($stdout)
+    @@__log__ ||= Logger.new($stdout)
   end
 end

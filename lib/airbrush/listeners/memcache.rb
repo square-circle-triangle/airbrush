@@ -18,6 +18,8 @@ module Airbrush
         @running = true
         @starling = MemCache.new(@host)
         
+        log.debug 'Accepting incoming jobs'
+        
         loop do
           process(@starling)
           break unless @running
@@ -36,11 +38,13 @@ module Airbrush
       
           return unless op and valid?(op)
           
+          log.debug "Processing #{op}"
+          
           begin
             @handler.process op[:command], op[:args]
           rescue Exception => e
-            # REVISIT: log bad command
-            puts "Received error during handler '#{e}'"
+            log.error "Received error during handler"
+            log.error e
           end
       
         end
@@ -54,8 +58,10 @@ module Airbrush
         
         def catch_signals(*signals)
           signals.each do |signal|
-            Signal.trap(signal.to_s.upcase) do
+            sig = signal.to_s.upcase
+            Signal.trap(sig) do
               @running = false
+              log.debug "Intercepted SIG#{sig}, exiting"
             end
           end
         end

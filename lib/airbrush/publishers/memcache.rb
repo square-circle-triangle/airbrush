@@ -13,6 +13,8 @@ module Airbrush
         # need to calculate an outboue queue name somehow, client will also need this to get the results
         queue = MemCache.new(@host)
         queue.set('result-queue', results)
+        
+        log.debug "Published #{results}"
       end
     end
   end
