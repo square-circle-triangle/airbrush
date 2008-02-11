@@ -35,6 +35,12 @@ module Airbrush
           sleep @poll_frequency
         end
       end
+
+      # REVISIT: share implementation with server?
+      def unique_name(id)
+        id.to_s
+      end
+      
   end
   
 end

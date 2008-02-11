@@ -57,10 +57,7 @@ describe Airbrush::Listeners::Memcache, 'initialization' do
   
     it 'should connect to the remote memcache server' # REVISIT: can't call start since it loops forever
   
-    it 'should poll the remote memcache server for jobs' do
-      @server.should_receive(:get).and_return(@op)
-      @memcache.send :process, @server
-    end
+    it 'should poll the remote memcache server for jobs' # REVISIT: can't call start since it loops forever
   
     it 'should sleep 2 seconds inbetween memcache server polls' # REVISIT: can't call start since it loops forever
   
@@ -104,16 +101,15 @@ describe Airbrush::Listeners::Memcache, 'initialization' do
     end
   
     it 'should pass valid jobs to the handler' do
-      @server.stub!(:get).and_return(@op)
       @handler.should_receive(:process).with(@op[:id], @op[:command], @op[:args]).and_return
-      @memcache.send :process, @server
+      @memcache.send :process, @op
     end
   
     it 'should log errors return from the handler' do
       @server.stub!(:get).and_return(@op)
       @server.log.should_receive(:error).twice.and_return
       @handler.should_receive(:process).with(@op[:id], @op[:command], @op[:args]).and_raise('Error')
-      @memcache.send :process, @server   
+      @memcache.send :process, @op
     end
     
     it 'should ignore errors returned from the handler (ie. errors raised from the handler should not halt processing)' do

@@ -21,7 +21,10 @@ module Airbrush
         log.debug 'Accepting incoming jobs'
         
         loop do
-          process(@starling)
+          poll do |operation|
+            process operation
+          end
+          
           break unless @running
           sleep @poll_frequency
         end
@@ -31,36 +34,9 @@ module Airbrush
       
       private
       
-        def process(starling)
-          op = starling.get(DEFAULT_INCOMING_QUEUE)
-      
-          # command format from client  :command => :resize, :args => { :image => blob, :width => 300, :height => 200 }
-      
-          return unless op
-          
-          unless valid?(op)
-            log.error "Received invalid job #{op}"
-            return
-          end
-          
-          log.debug "Processing #{op}"
-          
-          begin
-            @handler.process op[:id], op[:command], op[:args]
-          rescue Exception => e
-            log.error 'Received error during handler'
-            log.error e
-          end
-          
-          log.debug "Processed #{op}"
-        end
-        
-        def valid?(op)
-          return false unless op.is_a? Hash
-          return false unless op[:id]
-          return false unless op[:command]
-          return false unless op[:args]
-          true
+        def poll
+          operation = @starling.get(DEFAULT_INCOMING_QUEUE)
+          yield operation if operation and block_given?
         end
         
         def catch_signals(*signals)

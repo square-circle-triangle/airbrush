@@ -1,0 +1,64 @@
+#!/usr/bin/env ruby
+#
+#  Created on 2008-1-22.
+#  Copyright (c) 2008. All rights reserved.
+
+begin
+  require 'rubygems'
+rescue LoadError
+  # no rubygems to load, so we fail silently
+end
+
+require 'optparse'
+
+OPTIONS = {
+  :memcache => '127.0.0.1:22122',
+  :frequency => 2,
+  :verbose => false,
+}
+MANDATORY_OPTIONS = %w( width height image output )
+
+parser = OptionParser.new do |opts|
+  opts.banner = <<BANNER
+Example client for accessing the resize operation on a remote airbrush server, queued via memcache.
+
+Usage: #{File.basename($0)} [options]
+
+Options are:
+BANNER
+  opts.separator ""
+  opts.on("-m", "--memcache=HOST", String,
+          "The address of the memcache host to connect to",
+          "Default: #{OPTIONS[:memcache]}") { |OPTIONS[:memcache]| }
+  opts.on("-f", "--frequency=SECONDS", String,
+          "How often the remote memcache server is polled for incoming jobs, units of seconds",
+          "Default: #{OPTIONS[:frequency]}") { |OPTIONS[:frequency]| }
+  opts.on("-w", "--width=PIXELS", String,
+          "Target resize width") { |OPTIONS[:width]| }
+  opts.on("-h", "--height=PIXELS", String,
+          "Target resize height") { |OPTIONS[:height]| }
+  opts.on("-i", "--image=FILENAME", String,
+          "Source input image") { |OPTIONS[:image]| }
+  opts.on("-o", "--output=FILENAME", String,
+          "Target output image") { |OPTIONS[:output]| }
+  opts.on("-v", "--verbose",
+          "Verbose output") { |OPTIONS[:verbose]| }
+  opts.on("-h", "--help",
+          "Show this help message.") { puts opts; exit }
+  opts.parse!(ARGV)
+
+  if MANDATORY_OPTIONS && MANDATORY_OPTIONS.find { |option| OPTIONS[option.to_sym].nil? }
+    puts opts; exit
+  end
+end
+
+raise "Source image does not exist: #{OPTIONS[:image]}" unless File.exists?(OPTIONS[:image])
+
+# all good, lets go!
+
+require 'airbrush'
+
+client = Airbrush::Client.new(OPTIONS[:memcache])
+result = client.process('resize-operation', :resize, :image => File.read(OPTIONS[:image]), :width => OPTIONS[:width].to_i, :height => OPTIONS[:height].to_i)
+File.open(OPTIONS[:output], 'w') { |f| f << result }
+

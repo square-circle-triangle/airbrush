@@ -7,6 +7,38 @@ module Airbrush
         raise RuntimeError, 'implementations provide concrete listener functionality'
       end
       
+      protected
+      
+        def process(op)
+          raise 'No operation specified' unless op
+          
+          unless valid?(op)
+            log.error "Received invalid job #{op}"
+            return
+          end
+          
+          log.debug "Processing #{op[:id]}"
+          
+          begin
+            @handler.process op[:id], op[:command], op[:args]
+          rescue Exception => e
+            log.error 'Received error during handler'
+            log.error e
+          ensure
+            log.debug "Processed #{op[:id]}"
+          end
+        end
+        
+      private
+        
+        def valid?(op)
+          return false unless op.is_a? Hash
+          return false unless op[:id]
+          return false unless op[:command]
+          return false unless op[:args]
+          true
+        end
+        
     end
   end
 end
