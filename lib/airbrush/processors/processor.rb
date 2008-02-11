@@ -5,7 +5,7 @@ module Airbrush
     class Processor
       
       def dispatch(command, args)
-        raise "Unknown processor operation #{sym} (#{args.inspect unless args.blank?})" unless respond_to? command
+        raise "Unknown processor operation #{command} (#{args.inspect unless args.blank?})" unless respond_to? command
         params = assign(command, args)
         self.send command, *params
       end
