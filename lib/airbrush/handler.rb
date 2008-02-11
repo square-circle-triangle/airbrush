@@ -10,8 +10,8 @@ module Airbrush
       @publisher = publisher
     end
 
-    def process(command, args)
-      @publisher.publish @processor.dispatch(command, args)
+    def process(id, command, args)
+      @publisher.publish id, @processor.dispatch(command, args)
     end
 
   end

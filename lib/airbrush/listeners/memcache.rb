@@ -46,7 +46,7 @@ module Airbrush
           log.debug "Processing #{op}"
           
           begin
-            @handler.process op[:command], op[:args]
+            @handler.process op[:id], op[:command], op[:args]
           rescue Exception => e
             log.error 'Received error during handler'
             log.error e
@@ -57,6 +57,7 @@ module Airbrush
         
         def valid?(op)
           return false unless op.is_a? Hash
+          return false unless op[:id]
           return false unless op[:command]
           return false unless op[:args]
           true

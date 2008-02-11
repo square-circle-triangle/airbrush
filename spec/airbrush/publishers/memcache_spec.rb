@@ -22,20 +22,25 @@ describe Airbrush::Publishers::Memcache, 'when publishing' do
     @server.stub!(:set).and_return
     MemCache.stub!(:new).and_return(@server)
     @results = "results"
+    @id = 'id'
     
     @memcache = Airbrush::Publishers::Memcache.new(@host)
+    @memcache.stub!(:unique_name).and_return('unique')
   end
 
   it 'should connect to the remote memcache server' do
     MemCache.should_receive(:new).and_return(@server)
-    @memcache.publish(@results)
+    @memcache.publish(@id, @results)
   end
   
-  it 'should calculate a unique memcache queue name for publishing results'
+  it 'should calculate a unique memcache queue name for publishing results' do
+    @memcache.should_receive(:unique_name).with(@id).and_return('unique')
+    @memcache.publish(@id, @results)
+  end
   
   it 'should publish the given results to the remote memcache server' do
-    @server.should_receive(:set).with('result-queue', @results).and_return
-    @memcache.publish(@results)
+    @server.should_receive(:set).with('unique', @results).and_return
+    @memcache.publish(@id, @results)
   end
   
 end

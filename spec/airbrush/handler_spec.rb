@@ -23,18 +23,19 @@ describe Airbrush::Handler, 'when processing a request' do
     
     @handler = Airbrush::Handler.new(@processor, @publisher)
     
+    @id = 'id'
     @command = :command
     @args = {}    
   end
   
   it 'should pass the request to the processor' do
     @processor.should_receive(:dispatch).with(@command, @args).and_return(true)
-    @handler.process @command, @args
+    @handler.process @id, @command, @args
   end
   
   it 'should publish the processors result' do
-    @publisher.should_receive(:publish).with(true).and_return
-    @handler.process @command, @args
+    @publisher.should_receive(:publish).with(@id, true).and_return
+    @handler.process @id, @command, @args
   end
   
   it 'should handle errors raised from the processor gracefully'

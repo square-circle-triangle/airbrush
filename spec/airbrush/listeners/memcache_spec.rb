@@ -43,7 +43,7 @@ describe Airbrush::Listeners::Memcache, 'initialization' do
   describe Airbrush::Listeners::Memcache, 'when started' do
   
     before do
-      @op = { :command => :command, :args => {} }
+      @op = { :command => :command, :args => {}, :id => 'id' }
       @server = mock(MemCache)
       @server.stub!(:get).and_return(@op)
       MemCache.stub!(:new).and_return(@server)
@@ -69,21 +69,27 @@ describe Airbrush::Listeners::Memcache, 'initialization' do
       @handler.should_not_receive(:process)
       @memcache.send :process, @server
     end
+    
+    it 'should ensure remote jobs include a :id key' do
+      @server.stub!(:get).and_return(@op.except(:id))
+      @handler.should_not_receive(:process)
+      @memcache.send :process, @server
+    end
   
     it 'should ensure remote jobs include a :command key' do
-      @server.stub!(:get).and_return({})
+      @server.stub!(:get).and_return(@op.except(:command))
       @handler.should_not_receive(:process)
       @memcache.send :process, @server
     end
 
     it 'should ensure remote jobs include an :args key' do
-      @server.stub!(:get).and_return({:command => :command})
+      @server.stub!(:get).and_return(@op.except(:args))
       @handler.should_not_receive(:process)
       @memcache.send :process, @server
     end
   
     it 'should log invalid jobs' do
-      @server.stub!(:get).and_return({:command => :command})
+      @server.stub!(:get).and_return('invalid job')
       @server.stub!(:valid?).and_return(false)
       @server.log.should_receive(:error).and_return
       @handler.should_not_receive(:process)
@@ -99,14 +105,14 @@ describe Airbrush::Listeners::Memcache, 'initialization' do
   
     it 'should pass valid jobs to the handler' do
       @server.stub!(:get).and_return(@op)
-      @handler.should_receive(:process).with(@op[:command], @op[:args]).and_return
+      @handler.should_receive(:process).with(@op[:id], @op[:command], @op[:args]).and_return
       @memcache.send :process, @server
     end
   
     it 'should log errors return from the handler' do
       @server.stub!(:get).and_return(@op)
       @server.log.should_receive(:error).twice.and_return
-      @handler.should_receive(:process).with(@op[:command], @op[:args]).and_raise('Error')
+      @handler.should_receive(:process).with(@op[:id], @op[:command], @op[:args]).and_raise('Error')
       @memcache.send :process, @server   
     end
     
@@ -120,7 +126,6 @@ describe Airbrush::Listeners::Memcache, 'initialization' do
     # future
     it 'should accept a configurable poll time frequency'
     it 'should automatically discover the target memcache host address via dnssd'
-  
   end
   
 end

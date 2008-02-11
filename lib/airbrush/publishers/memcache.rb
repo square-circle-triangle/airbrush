@@ -9,12 +9,13 @@ module Airbrush
         @host = host
       end
 
-      def publish(results)
+      def publish(id, results)
         # need to calculate an outboue queue name somehow, client will also need this to get the results
+        name = unique_name(id)
         queue = MemCache.new(@host)
-        queue.set('result-queue', results)
+        queue.set(name, results)
         
-        log.debug "Published #{results}"
+        log.debug "Published #{results} to #{name}"
       end
     end
   end
