@@ -29,11 +29,17 @@ module Airbrush
         @server.set(@outbound_queue, :id => id, :command => command, :args => args)
         
         loop do
-          results = @server.get(unique_name(id))
-          return results unless results.nil?
+          poll(id) do |results|
+            return results
+          end
           
           sleep @poll_frequency
         end
+      end
+      
+      def poll(id)
+        results = @server.get(unique_name(id))
+        yield results if results and block_given?
       end
 
       # REVISIT: share implementation with server?
