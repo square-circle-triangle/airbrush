@@ -95,6 +95,7 @@ describe Airbrush::Listeners::Memcache, 'initialization' do
   
     # future
     it 'should accept a configurable poll time frequency'
+    it 'should catch sigint and disconnect from the memcache server'
     it 'should automatically discover the target memcache host address via dnssd'
   
   end

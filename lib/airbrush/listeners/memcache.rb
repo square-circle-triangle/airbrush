@@ -11,15 +11,20 @@ module Airbrush
       def initialize(host, frequency = DEFAULT_POLL_FREQUENCY)
         @host = host
         @poll_frequency = frequency
+        catch_signals(:int)
       end
     
       def start
-        starling = MemCache.new(@host)
+        @running = true
+        @starling = MemCache.new(@host)
         
         loop do
-          process(starling)
+          process(@starling)
+          break unless @running
           sleep @poll_frequency
         end
+        
+        @starling.reset
       end
       
       private
@@ -46,7 +51,14 @@ module Airbrush
           return false unless op[:args]
           true
         end
-      
+        
+        def catch_signals(*signals)
+          signals.each do |signal|
+            Signal.trap(signal.to_s.upcase) do
+              @running = false
+            end
+          end
+        end
     end
   end
 end
