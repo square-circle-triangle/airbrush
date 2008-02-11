@@ -1,10 +1,13 @@
 require 'memcache'
+require 'timeout'
 
 module Airbrush
+  include Timeout
   
   class Client
-    DEFAULT_POLL_FREQUENCY = 2 # seconds
     DEFAULT_INCOMING_QUEUE = 'incoming'
+    DEFAULT_POLL_FREQUENCY = 2.seconds
+    DEFAULT_TIMEOUT_LENGTH = 30.second
     
     attr_reader :host, :poll_frequency
     
@@ -28,12 +31,14 @@ module Airbrush
       def send_and_receive(id, command, args)
         @server.set(@outbound_queue, :id => id, :command => command, :args => args)
         
-        loop do
-          poll(id) do |results|
-            return results
-          end
+        timeout(DEFAULT_TIMEOUT_LENGTH) do
+          loop do
+            poll(id) do |results|
+              return results
+            end
           
-          sleep @poll_frequency
+            sleep @poll_frequency
+          end
         end
       end
       

@@ -16,7 +16,6 @@ describe Airbrush::Client, 'job management' do
     
     @host = 'host'
     @client = Airbrush::Client.new(@host)
-    @client.stub!(:send_and_receive).and_return('results')
   end
   
   describe Airbrush::Client, 'when created' do
@@ -61,9 +60,11 @@ describe Airbrush::Client, 'job management' do
       lambda { @client.process(@id, @command) }.should_not raise_error
     end
     
-    # future
-    it 'should time out after X seconds of inactivity'
-    
+    it 'should time out after 30 seconds of inactivity' do
+      Airbrush::Client::DEFAULT_TIMEOUT_LENGTH.should == 30.seconds
+      @client.should_receive(:timeout).and_return
+      @client.process(@id, @command)
+    end
   end
   
 end
