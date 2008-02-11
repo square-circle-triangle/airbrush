@@ -13,7 +13,8 @@ require 'optparse'
 
 OPTIONS = {
   :memcache => '127.0.0.1:22122',
-  :frequency => 2  
+  :frequency => 2,
+  :verbose => false
 }
 MANDATORY_OPTIONS = %w( )
 
@@ -34,6 +35,8 @@ BANNER
   opts.on("-f", "--frequency=SECONDS", String,
           "How often the remote memcache server is polled for incoming jobs, units of seconds",
           "Default: #{OPTIONS[:frequency]}") { |OPTIONS[:frequency]| }
+  opts.on("-v", "--verbose",
+          "Verbose output") { |OPTIONS[:verbose]| }
   opts.on("-h", "--help",
           "Show this help message.") { puts opts; exit }
   opts.parse!(ARGV)

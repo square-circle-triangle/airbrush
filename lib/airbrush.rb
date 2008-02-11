@@ -13,3 +13,9 @@ Dependencies.load_paths << File.dirname(__FILE__)
 
 module Airbrush
 end
+
+class Object
+  def log
+    @log ||= Logger.new($stdout)
+  end
+end
