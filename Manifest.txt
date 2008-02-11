@@ -32,6 +32,7 @@ spec/airbrush/listeners/listener_spec.rb
 spec/airbrush/listeners/memcache_spec.rb
 spec/airbrush/processors/processor_spec.rb
 spec/airbrush/publishers/memcache_spec.rb
+spec/airbrush/processors/rmagick_spec.rb
 spec/airbrush/publishers/publisher_spec.rb
 spec/airbrush/server_spec.rb
 spec/spec.opts
