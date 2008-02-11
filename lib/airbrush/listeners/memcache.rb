@@ -36,17 +36,23 @@ module Airbrush
       
           # command format from client  :command => :resize, :args => { :image => blob, :width => 300, :height => 200 }
       
-          return unless op and valid?(op)
+          return unless op
+          
+          unless valid?(op)
+            log.error "Received invalid job #{op}"
+            return
+          end
           
           log.debug "Processing #{op}"
           
           begin
             @handler.process op[:command], op[:args]
           rescue Exception => e
-            log.error "Received error during handler"
+            log.error 'Received error during handler'
             log.error e
           end
-      
+          
+          log.debug "Processed #{op}"
         end
         
         def valid?(op)

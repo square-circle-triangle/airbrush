@@ -27,6 +27,19 @@ describe Airbrush::Listeners::Memcache, 'initialization' do
   
   end
   
+  describe Airbrush::Listeners::Memcache, 'signal handling' do
+    
+    before do
+      Signal.stub!(:trap).and_return
+    end
+    
+    it 'should catch sigint and disconnect from the memcache server' do
+      Signal.should_receive(:trap).with('INT').and_return
+      Airbrush::Listeners::Memcache.new(@host, @frequency)
+    end
+  
+  end
+  
   describe Airbrush::Listeners::Memcache, 'when started' do
   
     before do
@@ -69,7 +82,13 @@ describe Airbrush::Listeners::Memcache, 'initialization' do
       @memcache.send :process, @server
     end
   
-    it 'should log invalid jobs'
+    it 'should log invalid jobs' do
+      @server.stub!(:get).and_return({:command => :command})
+      @server.stub!(:valid?).and_return(false)
+      @server.log.should_receive(:error).and_return
+      @handler.should_not_receive(:process)
+      @memcache.send :process, @server
+    end
   
     it 'should ignore invalid jobs (ie. invalid jobs should not halt processing)' do
       @server.stub!(:get).and_return(nil)
@@ -84,7 +103,12 @@ describe Airbrush::Listeners::Memcache, 'initialization' do
       @memcache.send :process, @server
     end
   
-    it 'should log errors return from the handler'
+    it 'should log errors return from the handler' do
+      @server.stub!(:get).and_return(@op)
+      @server.log.should_receive(:error).twice.and_return
+      @handler.should_receive(:process).with(@op[:command], @op[:args]).and_raise('Error')
+      @memcache.send :process, @server   
+    end
     
     it 'should ignore errors returned from the handler (ie. errors raised from the handler should not halt processing)' do
       @server.stub!(:get).and_return(@op)
@@ -95,7 +119,6 @@ describe Airbrush::Listeners::Memcache, 'initialization' do
   
     # future
     it 'should accept a configurable poll time frequency'
-    it 'should catch sigint and disconnect from the memcache server'
     it 'should automatically discover the target memcache host address via dnssd'
   
   end
