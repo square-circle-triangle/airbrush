@@ -15,7 +15,7 @@ module Airbrush
         queue = MemCache.new(@host)
         queue.set(name, results)
         
-        log.debug "Published #{name}"
+        log.debug "Published results from #{name}"
       end
     end
   end

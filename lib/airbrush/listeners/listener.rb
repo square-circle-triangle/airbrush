@@ -18,6 +18,7 @@ module Airbrush
           end
           
           log.debug "Processing #{op[:id]}"
+          start = Time.now
           
           begin
             @handler.process op[:id], op[:command], op[:args]
@@ -25,7 +26,7 @@ module Airbrush
             log.error 'Received error during handler'
             log.error e
           ensure
-            log.debug "Processed #{op[:id]}"
+            log.debug "Processed #{op[:id]}: #{Time.now - start} seconds processing time"
           end
         end
         
