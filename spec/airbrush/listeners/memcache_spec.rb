@@ -123,8 +123,12 @@ describe Airbrush::Listeners::Memcache, 'initialization' do
       lambda { @memcache.send :process, @server }.should_not raise_error
     end
   
+    it 'should accept a configurable poll time frequency' do
+      @memcache = Airbrush::Listeners::Memcache.new(@host, 10)
+      @memcache.poll_frequency.should == 10
+    end
+
     # future
-    it 'should accept a configurable poll time frequency'
     it 'should automatically discover the target memcache host address via dnssd'
   end
   
