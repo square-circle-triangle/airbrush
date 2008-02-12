@@ -17,6 +17,7 @@ describe Airbrush::Processors::Image::ImageProcessor, 'when preprocessing' do
     @preprocessor.stub!(:process).and_return
     
     @processor = Airbrush::Processors::Image::ImageProcessor.new
+    @old_preprocessors = Airbrush::Processors::Image::ImageProcessor.preprocessors
     Airbrush::Processors::Image::ImageProcessor.preprocessors = [ @preprocessor ]
   end
     
@@ -27,6 +28,10 @@ describe Airbrush::Processors::Image::ImageProcessor, 'when preprocessing' do
   it 'should invoke each preprocessor with the given image when requested' do
     @preprocessor.should_receive(:process).with(@image).and_return
     @processor.send :preprocess, @image
+  end
+  
+  after do
+    Airbrush::Processors::Image::ImageProcessor.preprocessors = @old_preprocessors
   end
   
 end
