@@ -4,7 +4,7 @@ module Airbrush
   module Processors
     module Image
       class Rmagick < ImageProcessor
-        before_filter :preprocess, :create_image
+        before_filter :purify_image, :load_image
         
         def resize(image, width, height)
           @img.change_geometry("#{width}x#{height}") { |cols, rows, image| @img.resize!(cols, rows) }
@@ -23,12 +23,16 @@ module Airbrush
         
         protected
         
-          def create_image(image)
+          def load_image(image)
             @img = Magick::Image.from_blob(image).first
           end
           
-          def preprocess(image)
-            @@preprocessors.each { |processor| processor.process image }
+          def purify_image(image)
+            system "jhead -purejpg #{image}" if jpeg?(image)
+          end
+          
+          def jpeg?(image)
+            image.downcase =~ /(jpg|jpeg)$/
           end
       end
     end

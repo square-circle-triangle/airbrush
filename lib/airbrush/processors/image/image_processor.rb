@@ -2,10 +2,7 @@ module Airbrush
   module Processors
     module Image
       class ImageProcessor < Processor
-        cattr_accessor :preprocessors
-        
-        @@preprocessors = [ Preprocessors::JheadPreprocessor.new ]
-        
+
         def self.before_filter(*symbols)
           @@filters = symbols
         end
@@ -21,12 +18,6 @@ module Airbrush
           self.send command, *params
         end
         
-        protected
-        
-          def preprocess(image)
-            @@preprocessors.each { |processor| processor.process image }
-          end
-
       end
     end
   end
