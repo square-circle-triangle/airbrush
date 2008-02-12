@@ -1,10 +1,6 @@
 require File.dirname(__FILE__) + '/../../../../spec_helper.rb'
 
 describe Airbrush::Processors::Image::Preprocessors::JheadPreprocessor, 'when created' do
-  
-  before do
-    # somehow mock out system calls
-  end
 
   it 'should raise and error if jhead is not installed'
   #   jhead_exists = system 'which jhead'
@@ -21,13 +17,19 @@ end
 describe Airbrush::Processors::Image::Preprocessors::JheadPreprocessor, 'when processing' do
   
   before do
-    @image = 'image'
+    @jpeg = 'image.Jpg'
+    @tiff = 'image.tif'
     @processor = Airbrush::Processors::Image::Preprocessors::JheadPreprocessor.new
+  end
+  
+  it 'should skip all non jpeg files' do
+    @processor.should_not_receive(:system)
+    @processor.process(@tiff)
   end
 
   it 'should run jhead over the original image' do
-    @processor.should_receive(:system).with("jhead -purejpg #{@image}").and_return
-    @processor.process(@image)
+    @processor.should_receive(:system).with("jhead -purejpg #{@jpeg}").and_return
+    @processor.process(@jpeg)
   end
   
 end

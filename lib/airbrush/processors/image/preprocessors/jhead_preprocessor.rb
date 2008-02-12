@@ -4,14 +4,17 @@ module Airbrush
       module Preprocessors
         class JheadPreprocessor < Preprocessor
 
-          def initialize
-            #raise 'jhead is not installed on this system' unless system 'which jhead'
-          end
-          
           def process(image)
+            return if not jpeg?(image)
             system "jhead -purejpg #{image}"
           end
-
+          
+          private
+          
+            def jpeg?(image)
+              image.downcase =~ /(jpg|jpeg)$/
+            end
+            
         end
       end
     end
