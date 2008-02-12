@@ -19,17 +19,17 @@ describe Airbrush::Processors::Image::Rmagick, 'class' do
   describe Airbrush::Processors::Image::Rmagick, 'when resizing' do
   
     it 'should preprocess images before resizing' do
-      @processor.dispatch :resize, :image => @image, :width => 300, :height => 200
+      @processor.resize @image, 300, 200
     end
 
     it 'should change the geometry of the image' do
       @rm_image.should_receive(:change_geometry).and_return
-      @processor.dispatch :resize, :image => @image, :width => 300, :height => 200
+      @processor.resize @image, 300, 200
     end
 
-    it 'should change return the raw image data back to the caller' do
+    it 'should eturn the raw image data back to the caller' do
       @rm_image.should_receive(:to_blob).and_return('blob')
-      @processor.dispatch :resize, :image => @image, :width => 300, :height => 200
+      @processor.resize(@image, 300, 200).should == 'blob'
     end
   
   end
@@ -37,17 +37,17 @@ describe Airbrush::Processors::Image::Rmagick, 'class' do
   describe Airbrush::Processors::Image::Rmagick, 'when cropping' do
   
     it 'should preprocess images before cropping' do
-      @processor.dispatch :crop, :image => @image, :tl_x => 10, :tl_y => 10, :br_x => 100, :br_y => 100
+      @processor.crop @image, 10, 10, 100, 100
     end
   
     it 'should change the geometry of the image' do
       @rm_image.should_receive(:crop).and_return
-      @processor.dispatch :crop, :image => @image, :tl_x => 10, :tl_y => 10, :br_x => 100, :br_y => 100
+      @processor.crop @image, 10, 10, 100, 100
     end
 
-    it 'should change return the raw image data back to the caller' do
+    it 'should return the raw image data back to the caller' do
       @rm_image.should_receive(:to_blob).and_return('blob')
-      @processor.dispatch :crop, :image => @image, :tl_x => 10, :tl_y => 10, :br_x => 100, :br_y => 100
+      @processor.crop(@image, 10, 10, 100, 100).should == 'blob'
     end
   
   end
@@ -55,17 +55,35 @@ describe Airbrush::Processors::Image::Rmagick, 'class' do
   describe Airbrush::Processors::Image::Rmagick, 'when performing a resized crop' do
   
     it 'should preprocess images before resizing/cropping' do
-      @processor.dispatch :crop_resized, :image => @image, :width => 75, :height => 75
+      @processor.crop_resize @image, 75, 75
     end
   
     it 'should change the geometry of the image' do
       @rm_image.should_receive(:crop_resized!).and_return
-      @processor.dispatch :crop_resized, :image => @image, :width => 75, :height => 75
+      @processor.crop_resize @image, 75, 75
     end
 
-    it 'should change return the raw image data back to the caller' do
+    it 'should return the raw image data back to the caller' do
       @rm_image.should_receive(:to_blob).and_return('blob')
-      @processor.dispatch :crop_resized, :image => @image, :width => 75, :height => 75
+      @processor.crop_resize(@image, 75, 75).should == 'blob'
+    end
+  
+  end
+
+  describe Airbrush::Processors::Image::Rmagick, 'when generating previews' do
+  
+    it 'should preprocess images before resizing/cropping' do
+      @processor.previews @image, { :small => [200,100], :large => [500,250] }
+    end
+  
+    it 'should change the geometry of the image' do
+      @rm_image.should_receive(:crop_resized!).twice.and_return
+      @processor.previews @image, { :small => [200,100], :large => [500,250] }
+    end
+
+    it 'should return the raw image data back to the caller' do
+      @rm_image.should_receive(:to_blob).twice.and_return('blob')
+      @processor.previews(@image, { :small => [200,100], :large => [500,250] }).should == { :small => 'blob', :large => 'blob'}
     end
   
   end
