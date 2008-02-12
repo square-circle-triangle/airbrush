@@ -9,7 +9,7 @@ module Airbrush
         params = assign(command, args)
         self.send command, *params
       end
-            
+                  
       private
       
         def assign(command, args)
