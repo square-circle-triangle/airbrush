@@ -13,10 +13,9 @@ require 'optparse'
 
 OPTIONS = {
   :memcache => '127.0.0.1:22122',
-  :frequency => 2,
-  :verbose => false,
+  :verbose => false
 }
-MANDATORY_OPTIONS = %w( width height image output )
+MANDATORY_OPTIONS = %w( image output )
 
 parser = OptionParser.new do |opts|
   opts.banner = <<BANNER
@@ -30,13 +29,6 @@ BANNER
   opts.on("-m", "--memcache=HOST", String,
           "The address of the memcache host to connect to",
           "Default: #{OPTIONS[:memcache]}") { |OPTIONS[:memcache]| }
-  opts.on("-f", "--frequency=SECONDS", String,
-          "How often the remote memcache server is polled for incoming jobs, units of seconds",
-          "Default: #{OPTIONS[:frequency]}") { |OPTIONS[:frequency]| }
-  opts.on("-w", "--width=PIXELS", String,
-          "Target resize width") { |OPTIONS[:width]| }
-  opts.on("-h", "--height=PIXELS", String,
-          "Target resize height") { |OPTIONS[:height]| }
   opts.on("-i", "--image=FILENAME", String,
           "Source input image") { |OPTIONS[:image]| }
   opts.on("-o", "--output=FILENAME", String,
@@ -59,6 +51,8 @@ raise "Source image does not exist: #{OPTIONS[:image]}" unless File.exists?(OPTI
 require 'airbrush'
 
 client = Airbrush::Client.new(OPTIONS[:memcache])
-result = client.process('resize-operation', :resize, :image => File.read(OPTIONS[:image]), :width => OPTIONS[:width].to_i, :height => OPTIONS[:height].to_i)
-File.open(OPTIONS[:output], 'w') { |f| f << result }
+results = client.process('generate-previews', :previews, :image => File.read(OPTIONS[:image]), :sizes => {:small => [300,200], :large => [600,400]})
+results.each do |k,v|
+  File.open("#{OPTIONS[:output]}-#{k}.jpg", 'w') { |f| f << v }
+end
 

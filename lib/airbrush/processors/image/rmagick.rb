@@ -14,7 +14,7 @@ module Airbrush
 
         def crop(image, tl_x, tl_y, br_x, br_y)
           img = load(image)
-          img.crop(tl_x, tl_y, br_x, br_y)
+          img.crop!(tl_x, tl_y, br_x, br_y)
           img.to_blob
         end
 
@@ -24,8 +24,8 @@ module Airbrush
           img.to_blob
         end
         
-        def previews(image, sizes) # sizes = { :small => [200,100], :medium => [400,200], :large => [600,300] }
-          sizes.inject(Hash.new) { |m, kv| m[kv.first] = crop_resize(image, *kv); m }
+        def previews(image, sizes) # sizes => { :small => [200,100], :medium => [400,200], :large => [600,300] }
+          sizes.inject(Hash.new) { |m, kv| m[kv.first] = crop_resize(image, *kv.last); m }
         end
         
         protected
