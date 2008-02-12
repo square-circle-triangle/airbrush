@@ -8,7 +8,7 @@ module Airbrush
       log.level = context[:verbose] ? Logger::DEBUG : Logger::ERROR
       
       @listener = Airbrush::Listeners::Memcache.new(memcache_host, memcache_poll)
-      @listener.handler = Handler.new(Processors::Rmagick.new, Publishers::Memcache.new(memcache_host))
+      @listener.handler = Handler.new(Processors::Image::Rmagick.new, Publishers::Memcache.new(memcache_host))
     end
     
     def start

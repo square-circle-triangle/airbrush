@@ -25,7 +25,7 @@ describe Airbrush::Server, 'when created' do
   end
 
   it 'should automatically configure the handler with an rmagick processor' do
-    @airbrush.listener.handler.processor.class.should == Airbrush::Processors::Rmagick
+    @airbrush.listener.handler.processor.class.should == Airbrush::Processors::Image::Rmagick
   end
   
   it 'should automatically configure the handler with a memcache publisher' do
