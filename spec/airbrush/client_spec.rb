@@ -1,5 +1,5 @@
 require File.dirname(__FILE__) + '/../spec_helper.rb'
-require 'memcache'
+require 'starling'
 
 describe Airbrush::Client, 'job management' do
   
@@ -9,10 +9,10 @@ describe Airbrush::Client, 'job management' do
     @args = {}
     @results = 'results'
     
-    @server = mock(MemCache)
+    @server = mock(Starling)
     @server.stub!(:set).and_return
     @server.stub!(:get).and_return('results')
-    MemCache.stub!(:new).and_return(@server)
+    Starling.stub!(:new).and_return(@server)
     
     @host = 'host'
     @client = Airbrush::Client.new(@host)
@@ -22,10 +22,6 @@ describe Airbrush::Client, 'job management' do
     
     it 'should support a configurable target memcache host' do
       @client.host.should == @host
-    end
-    
-    it 'should support a configurable results queue poll frequency' do
-      @client.poll_frequency.should == Airbrush::Client::DEFAULT_POLL_FREQUENCY
     end
     
   end
