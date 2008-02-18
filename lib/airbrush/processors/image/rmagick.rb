@@ -20,7 +20,7 @@ module Airbrush
 
         def crop_resize(image, width, height)
           img = load(image)
-          img.crop_resized!(width, height, Magick::NorthGravity)
+          img.crop_resized!(width, height)
           img.to_blob
         end
         
