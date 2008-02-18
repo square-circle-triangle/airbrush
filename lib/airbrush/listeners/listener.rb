@@ -4,7 +4,7 @@ module Airbrush
       attr_accessor :handler
       
       def start
-        raise RuntimeError, 'implementations provide concrete listener functionality'
+        raise 'implementations provide concrete listener functionality'
       end
       
       protected
@@ -24,7 +24,7 @@ module Airbrush
             @handler.process op[:id], op[:command], op[:args]
           rescue Exception => e
             log.error 'Received error during handler'
-            log.error e
+            log.error e # error string back to the client
           ensure
             log.debug "Processed #{op[:id]}: #{Time.now - start} seconds processing time"
           end
