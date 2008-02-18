@@ -8,7 +8,7 @@ describe Airbrush::Processors::Image::Rmagick, 'class' do
   
     @rm_image = mock(Object)
     @rm_image.stub!(:change_geometry).and_return
-    @rm_image.stub!(:crop).and_return
+    @rm_image.stub!(:crop!).and_return
     @rm_image.stub!(:crop_resized!).and_return
     @rm_image.stub!(:to_blob).and_return('blob')
   
@@ -41,7 +41,7 @@ describe Airbrush::Processors::Image::Rmagick, 'class' do
     end
   
     it 'should change the geometry of the image' do
-      @rm_image.should_receive(:crop).and_return
+      @rm_image.should_receive(:crop!).and_return
       @processor.crop @image, 10, 10, 100, 100
     end
 
