@@ -4,12 +4,18 @@ module Airbrush
       class ImageProcessor < Processor
 
         def self.before_filter(*symbols)
-          @@filters = symbols
+          @@before_filters = symbols
+        end
+
+        def self.after_filter(*symbols)
+          @@after_filters = symbols
         end
         
         def dispatch(command, args)
-          @@filters.each { |filter| filter_dispatch(filter, args) }
-          super command, args
+          @@before_filters.each { |filter| filter_dispatch(filter, args) } if @@before_filters
+          rv = super command, args
+          @@after_filters.each { |filter| filter_dispatch(filter, args) } if @@after_filters
+          rv
         end
         
         def filter_dispatch(command, args)
