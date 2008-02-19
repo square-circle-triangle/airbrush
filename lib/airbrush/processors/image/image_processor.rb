@@ -2,19 +2,20 @@ module Airbrush
   module Processors
     module Image
       class ImageProcessor < Processor
+        class_inheritable_accessor :before_filters, :after_filters
 
         def self.before_filter(*symbols)
-          @@before_filters = symbols
+          self.before_filters = symbols
         end
 
         def self.after_filter(*symbols)
-          @@after_filters = symbols
+          self.after_filters = symbols
         end
         
         def dispatch(command, args)
-          @@before_filters.each { |filter| filter_dispatch(filter, args) } if @@before_filters
+          self.before_filters.each { |filter| filter_dispatch(filter, args) } if self.before_filters
           rv = super command, args
-          @@after_filters.each { |filter| filter_dispatch(filter, args) } if @@after_filters
+          self.after_filters.each { |filter| filter_dispatch(filter, args) } if self.after_filters
           rv
         end
         
