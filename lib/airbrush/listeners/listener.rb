@@ -24,7 +24,7 @@ module Airbrush
             @handler.process op[:id], op[:command], op[:args]
           rescue Exception => e
             log.error 'Received error during handler'
-            log.error e # error string back to the client
+            log.error e
           ensure
             log.debug "Processed #{op[:id]}: #{Time.now - start} seconds processing time"
           end

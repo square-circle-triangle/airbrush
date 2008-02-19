@@ -14,8 +14,8 @@ describe Airbrush::Processors::Processor, 'abstract class' do
     @processor = Airbrush::Processors::Processor.new
   end
   
-  it 'should rasie an error from dispatch if the requested command is not implemented by the processor' do
-    lambda { @processor.dispatch(:blah, {}) }.should raise_error
+  it 'should return an error from dispatch if the requested command is not implemented by the processor' do
+    @processor.dispatch(:blah, {}).should == "Unknown processor operation blah ()"
   end
   
 end
@@ -51,5 +51,19 @@ describe Airbrush::Processors::Processor, 'when processing' do
   it 'should invoke the requested target action' do
     @processor.dispatch(:my_action, { :one => 'a', :two => 'b' }).should == %w( a b 3 )
   end
+end
+
+describe Airbrush::Processors::Processor, 'error handling' do
   
+  before do
+    @error = 'an error string'
+    @processor = MyProcessor.new
+    @processor.stub!(:my_action).and_raise(@error)
+  end
+  
+  it 'should return an error from dispatch if the requested command raises an exception during processing' do
+    @processor.should_receive(:my_action).and_raise(@error)
+    @processor.dispatch(:my_action, { :one => 'a', :two => 'b', :three => 'c' }).should == @error
+  end
+
 end
