@@ -27,7 +27,7 @@ module Airbrush
         end
         
         def previews(image, sizes) # sizes => { :small => [200,100], :medium => [400,200], :large => [600,300] }
-          sizes.inject(Hash.new) { |m, kv| m[kv.first] = crop_resize(image, *kv.last); m }
+          sizes.inject(Hash.new) { |m, (k, v)| m[k] = crop_resize(image, *v); m }
         end
         
         protected
