@@ -36,7 +36,7 @@ module Airbrush
           end
           
           def purify_image(image)
-            system "jhead -purejpg #{image}" if jpeg?(image)
+            #system "jhead -purejpg #{image}" if jpeg?(image) # REVISIT, passes all image content to the commandline!
           end
           
           def jpeg?(image)
