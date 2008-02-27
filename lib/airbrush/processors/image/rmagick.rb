@@ -47,12 +47,25 @@ module Magick
     SCT_SRGB_ICC = File.dirname(__FILE__) + '/profiles/srgb-profile.icc'
     
     def ensure_rgb!
-      return if colorspace == Magick::RGBColorspace
+      return if rgb?
       
-      add_profile SCT_CMYK_ICC if color_profile == nil and colorspace == Magick::CMYKColorspace
-      add_profile SCT_SRGB_ICC
-      
-      log.debug "Added sRGB profile to image"
+      if cmyk?
+        add_profile SCT_CMYK_ICC if color_profile == nil
+        add_profile SCT_SRGB_ICC
+        log.debug "Added sRGB profile to image"
+      else
+        log.warn "Non CMYK/RGB color profile encountered, please install a profile for #{colorspace}"
+      end
     end
+    
+    private
+    
+      def rgb?
+        colorspace == Magick::RGBColorspace
+      end
+      
+      def cmyk?
+        colorspace == Magick::CMYKColorspace
+      end
   end
 end

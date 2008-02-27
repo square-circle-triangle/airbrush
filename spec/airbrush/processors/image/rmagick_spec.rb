@@ -128,13 +128,20 @@ describe Magick::Image, 'when converting images to sRGB' do
     @image.ensure_rgb!
   end
   
+  it 'should log a warning if a non CMYK/RGB image is encountered' do
+    @image.colorspace = Magick::Rec709LumaColorspace
+    @image.should_not_receive(:add_profile)
+    @image.log.should_receive(:warn).and_return
+    @image.ensure_rgb!
+  end
+  
   it 'should add a CMYK profile if the image does not have a profile and is in CMYK colour space' do
     @image.colorspace = Magick::CMYKColorspace
     @image.should_receive(:add_profile).twice.and_return
     @image.ensure_rgb!
   end
   
-  it 'should add a sRGB profile' do
+  it 'should add a sRGB profile if the image is in CMYK colour space' do
     @image.colorspace = Magick::CMYKColorspace
     @image.should_receive(:add_profile).with(Magick::Image::SCT_SRGB_ICC).and_return
     @image.ensure_rgb!
