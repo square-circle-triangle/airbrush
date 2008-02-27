@@ -5,6 +5,7 @@ module Airbrush
     module Image
       class Rmagick < ImageProcessor
         before_filter :purify_image
+        # after_filter :ensure_rgb_profile
         
         def resize(image, width, height)
           img = load(image)
