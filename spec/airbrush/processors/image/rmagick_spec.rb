@@ -13,6 +13,7 @@ describe Airbrush::Processors::Image::Rmagick, 'class' do
     @rm_image.stub!(:to_blob).and_return('blob')
   
     @processor = Airbrush::Processors::Image::Rmagick.new
+    @processor.stub!(:purify_image).and_return
     Magick::Image.stub!(:from_blob).and_return([@rm_image])
   end
   
@@ -73,7 +74,8 @@ describe Airbrush::Processors::Image::Rmagick, 'class' do
   describe Airbrush::Processors::Image::Rmagick, 'when generating previews' do
   
     it 'should preprocess images before resizing/cropping' do
-      @processor.previews @image, { :small => [200,100], :large => [500,250] }
+      @processor.should_receive(:purify_image).and_return
+      @processor.dispatch :previews, { :image => @image, :small => [200,100], :large => [500,250] }
     end
   
     it 'should change the geometry of the image' do
