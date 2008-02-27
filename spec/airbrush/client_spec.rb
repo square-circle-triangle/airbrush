@@ -9,7 +9,8 @@ describe Airbrush::Client, 'job management' do
     @args = {}
     @results = 'results'
     @queue = 'incoming'
-    @timeout = 5.minutes
+    @response_timeout = 5.minutes
+    @queue_validity = 15.minutes
     
     @server = mock(Starling)
     @server.stub!(:set).and_return
@@ -17,7 +18,7 @@ describe Airbrush::Client, 'job management' do
     Starling.stub!(:new).and_return(@server)
     
     @host = 'host'
-    @client = Airbrush::Client.new(@host, @queue, @timeout)
+    @client = Airbrush::Client.new(@host, @queue, @response_timeout, @queue_validity)
   end
   
   describe Airbrush::Client, 'when created' do
@@ -31,7 +32,11 @@ describe Airbrush::Client, 'job management' do
     end
     
     it 'should support a configurable target memcache host' do
-      @client.timeout.should == @timeout
+      @client.response_timeout.should == @response_timeout
+    end
+
+    it 'should support a configurable queue validity' do
+      @client.queue_validity.should == @queue_validity
     end
     
   end
@@ -67,9 +72,14 @@ describe Airbrush::Client, 'job management' do
     end
     
     it 'should time out after 2 minutes seconds of inactivity' do
-      Airbrush::Client::DEFAULT_TIMEOUT_LENGTH.should == 2.minutes
-      #@client.should_receive(:timeout).and_return # must check Timeout::timeout
+      Airbrush::Client::DEFAULT_RESPONSE_TIMEOUT.should == 2.minutes
+      Timeout.should_receive(:timeout).and_return
       @client.process(@id, @command)
+    end
+    
+    it 'should add the job into the incoming process queue' do
+      @server.should_receive(:set).with(@queue, { :id => @id, :command => @command, :args => @args }, @queue_validity)
+      @client.process(@id, @command, @args)
     end
     
   end
