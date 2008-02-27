@@ -6,14 +6,15 @@ module Airbrush
   
   class Client
     DEFAULT_INCOMING_QUEUE = 'incoming'
-    DEFAULT_TIMEOUT_LENGTH = 30
+    DEFAULT_TIMEOUT_LENGTH = 2.minutes
     
-    attr_reader :host
+    attr_reader :host, :incoming_queue, :timeout
 
-    def initialize(host, outbound_queue = DEFAULT_INCOMING_QUEUE)
+    def initialize(host, incoming_queue = DEFAULT_INCOMING_QUEUE, timeout = DEFAULT_TIMEOUT_LENGTH)
       @host = host
       @server = Starling.new(@host)
-      @outbound_queue = outbound_queue
+      @incoming_queue = incoming_queue
+      @timeout = timeout
     end
     
     def process(id, command, args = {})
@@ -27,10 +28,10 @@ module Airbrush
     private
     
       def send_and_receive(id, command, args)
-        @server.set(@outbound_queue, :id => id, :command => command, :args => args)
+        @server.set(@incoming_queue, :id => id, :command => command, :args => args)
         queue = unique_name(id)
         
-        timeout(DEFAULT_TIMEOUT_LENGTH) do
+        Timeout::timeout(@timeout) do
           return @server.get(queue)
         end
       end

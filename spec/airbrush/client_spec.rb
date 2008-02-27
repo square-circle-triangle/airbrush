@@ -8,6 +8,8 @@ describe Airbrush::Client, 'job management' do
     @command = :command
     @args = {}
     @results = 'results'
+    @queue = 'incoming'
+    @timeout = 5.minutes
     
     @server = mock(Starling)
     @server.stub!(:set).and_return
@@ -15,13 +17,21 @@ describe Airbrush::Client, 'job management' do
     Starling.stub!(:new).and_return(@server)
     
     @host = 'host'
-    @client = Airbrush::Client.new(@host)
+    @client = Airbrush::Client.new(@host, @queue, @timeout)
   end
   
   describe Airbrush::Client, 'when created' do
     
     it 'should support a configurable target memcache host' do
       @client.host.should == @host
+    end
+
+    it 'should support a configurable inbound queue name' do
+      @client.incoming_queue.should == @queue
+    end
+    
+    it 'should support a configurable target memcache host' do
+      @client.timeout.should == @timeout
     end
     
   end
@@ -56,11 +66,12 @@ describe Airbrush::Client, 'job management' do
       lambda { @client.process(@id, @command) }.should_not raise_error
     end
     
-    it 'should time out after 30 seconds of inactivity' do
-      Airbrush::Client::DEFAULT_TIMEOUT_LENGTH.should == 30.seconds
-      @client.should_receive(:timeout).and_return
+    it 'should time out after 2 minutes seconds of inactivity' do
+      Airbrush::Client::DEFAULT_TIMEOUT_LENGTH.should == 2.minutes
+      #@client.should_receive(:timeout).and_return # must check Timeout::timeout
       @client.process(@id, @command)
     end
+    
   end
   
 end
