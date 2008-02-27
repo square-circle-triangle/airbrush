@@ -16,6 +16,8 @@ lib/airbrush/listeners/memcache.rb
 lib/airbrush/listeners/socket.rb
 lib/airbrush/listeners/webservice.rb
 lib/airbrush/processors/image/image_processor.rb
+lib/airbrush/processors/image/profiles/cmyk-profile.icc
+lib/airbrush/processors/image/profiles/srgb-profile.icc
 lib/airbrush/processors/image/rmagick.rb
 lib/airbrush/processors/processor.rb
 lib/airbrush/publishers/http.rb
