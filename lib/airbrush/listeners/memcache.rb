@@ -4,7 +4,7 @@ module Airbrush
   module Listeners
     class Memcache < Listener
       DEFAULT_POLL_FREQUENCY = 2 # seconds
-      DEFAULT_INCOMING_QUEUE = 'incoming'
+      DEFAULT_INCOMING_QUEUE = 'airbrush_incoming_queue'
       
       attr_reader :host, :poll_frequency
       

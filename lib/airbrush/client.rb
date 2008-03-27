@@ -5,9 +5,9 @@ module Airbrush
   include Timeout
   
   class Client
-    DEFAULT_INCOMING_QUEUE = 'incoming'
+    DEFAULT_INCOMING_QUEUE = 'airbrush_incoming_queue'
     DEFAULT_RESPONSE_TIMEOUT = 2.minutes
-    DEFAULT_QUEUE_VALIDITY = 10.minutes
+    DEFAULT_QUEUE_VALIDITY = 0 #This should be changed back to a valid timeout once we know the problem.
     
     attr_reader :host, :incoming_queue, :response_timeout, :queue_validity
 
@@ -30,9 +30,8 @@ module Airbrush
     private
     
       def send_and_receive(id, command, args)
-        @server.set(@incoming_queue, { :id => id, :command => command, :args => args }, @queue_validity)
+        @server.set(@incoming_queue, { :id => id, :command => command, :args => args }, @queue_validity, false)
         queue = unique_name(id)
-        
         Timeout::timeout(@response_timeout) do
           return @server.get(queue)
         end
@@ -41,8 +40,6 @@ module Airbrush
       # REVISIT: share implementation with server?
       def unique_name(id)
         id.to_s
-      end
-      
+      end 
   end
-  
 end

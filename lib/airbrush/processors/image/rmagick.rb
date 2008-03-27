@@ -9,6 +9,7 @@ module Airbrush
           img = load(image)
           img.change_geometry("#{width}x#{height}") { |cols, rows, image| img.resize!(cols, rows) }
           img.ensure_rgb!
+          img.format = 'JPEG'
           img.to_blob
         end
         
@@ -16,6 +17,7 @@ module Airbrush
           img = load(image)
           img.crop!(tl_x, tl_y, br_x, br_y)
           img.ensure_rgb!
+          img.format = 'JPEG'
           img.to_blob
         end
 
@@ -23,6 +25,7 @@ module Airbrush
           img = load(image)
           img.crop_resized!(width, height)
           img.ensure_rgb!
+          img.format = 'JPEG'
           img.to_blob
         end
         
