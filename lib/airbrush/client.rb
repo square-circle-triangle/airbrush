@@ -7,7 +7,7 @@ module Airbrush
   class Client
     DEFAULT_INCOMING_QUEUE   = 'airbrush_incoming_queue'
     DEFAULT_RESPONSE_TIMEOUT = 2.minutes
-    DEFAULT_QUEUE_VALIDITY   = 10.minutes
+    DEFAULT_QUEUE_VALIDITY   = 0 # 10.minutes for the moment
 
     attr_reader :host, :incoming_queue, :response_timeout, :queue_validity
 
