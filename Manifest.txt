@@ -1,4 +1,3 @@
-.gitignore
 History.txt
 Manifest.txt
 README.txt
@@ -10,6 +9,7 @@ config/requirements.rb
 lib/airbrush.rb
 lib/airbrush/client.rb
 lib/airbrush/core_ext/get_args.rb
+lib/airbrush/core_ext/timestamped_logger.rb
 lib/airbrush/handler.rb
 lib/airbrush/listeners/listener.rb
 lib/airbrush/listeners/memcache.rb

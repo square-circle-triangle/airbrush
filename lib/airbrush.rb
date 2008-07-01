@@ -10,6 +10,9 @@ Dependencies.load_paths << File.dirname(__FILE__)
 #Dependencies::RAILS_DEFAULT_LOGGER = Logger.new($stdout)
 #Dependencies.log_activity = true
 
+# Load up extensions to existing classes
+Dir[File.dirname(__FILE__) + '/airbrush/core_ext/*.rb'].each { |e| require e }
+
 module Airbrush
 end
 
