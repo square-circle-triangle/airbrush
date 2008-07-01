@@ -9,7 +9,7 @@ module Airbrush
           img = load(image)
           img.change_geometry("#{width}x#{height}") { |cols, rows, image| img.resize!(cols, rows) }
           img.ensure_rgb!
-          img.format = 'JPEG'
+          img.format = 'JPEG' # ensure that resized output is a JPEG
           img.to_blob
         end
 
