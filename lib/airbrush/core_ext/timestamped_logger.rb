@@ -6,6 +6,5 @@ module ActiveSupport
     end
 
     alias_method_chain :add, :timestamps
-
   end
 end
