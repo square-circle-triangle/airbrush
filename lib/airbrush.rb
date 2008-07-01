@@ -2,7 +2,6 @@ $:.unshift File.dirname(__FILE__)
 
 # required gems
 require 'rubygems'
-require 'logger'
 require 'active_support'
 
 Dependencies.load_paths << File.dirname(__FILE__)
@@ -16,6 +15,13 @@ end
 
 class Object
   def log
-    @@__log__ ||= Logger.new($stdout)
+    @@__log__ ||= __create_logger__($stdout)
   end
+
+  private
+
+    def __create_logger__(target)
+      @@__log__ = ActiveSupport::BufferedLogger.new(target, ActiveSupport::BufferedLogger::Severity::INFO)
+    end
+
 end

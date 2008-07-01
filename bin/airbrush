@@ -35,6 +35,9 @@ BANNER
   opts.on("-f", "--frequency=SECONDS", String,
           "How often the remote memcache server is polled for incoming jobs, units of seconds",
           "Default: #{OPTIONS[:frequency]}") { |OPTIONS[:frequency]| }
+  opts.on("-l", "--log=file", String,
+          "Specify where to send logging output",
+          "Default: stdout") { |OPTIONS[:log_target]| }
   opts.on("-v", "--verbose",
           "Verbose output") { |OPTIONS[:verbose]| }
   opts.on("-h", "--help",
