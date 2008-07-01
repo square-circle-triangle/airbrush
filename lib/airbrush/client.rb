@@ -16,7 +16,7 @@ module Airbrush
       @server = Starling.new(@host)
       @incoming_queue = incoming_queue
       @response_timeout = response_timeout
-      @queue_validity = queue_validity
+      @queue_validity = queue_validity.to_i
     end
 
     def process(id, command, args = {})
