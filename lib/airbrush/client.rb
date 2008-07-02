@@ -3,6 +3,7 @@ require 'timeout'
 
 module Airbrush
   include Timeout
+  class AirbrushProcessingError < StandardError; end
 
   class Client
     DEFAULT_INCOMING_QUEUE   = 'airbrush_incoming_queue'
@@ -34,7 +35,7 @@ module Airbrush
         queue = unique_name(id)
         Timeout::timeout(@response_timeout) do
           response = @server.get(queue)
-          raise format_error(response) if response.include? :exception
+          raise AirbrushProcessingError, format_error(response) if response.include? :exception
           return response
         end
       end
