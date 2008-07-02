@@ -33,13 +33,19 @@ module Airbrush
         @server.set(@incoming_queue, { :id => id, :command => command, :args => args }, @queue_validity, false)
         queue = unique_name(id)
         Timeout::timeout(@response_timeout) do
-          return @server.get(queue)
+          response = @server.get(queue)
+          raise format_error(response) if response.include? :exception
+          return response
         end
       end
 
       # REVISIT: share implementation with server?
       def unique_name(id)
         id.to_s
+      end
+
+      def format_error(response)
+        "#{response[:exception]}: #{response[:message]}"
       end
   end
 end

@@ -7,9 +7,9 @@ module Airbrush
         params = assign(command, args)
         self.send command, *params
       rescue Exception => e
-        log.error 'Received error during processor dispatch'
-        log.error e
-        e.message
+        buffer = "ERROR: Received error during processor dispatch for command '#{command}'"
+        log.error buffer; log.error e
+        { :exception => buffer, :message => e.message }
       end
 
       protected
