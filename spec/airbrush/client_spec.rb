@@ -7,21 +7,21 @@ describe Airbrush::Client, 'job management' do
     @id = :id
     @command = :command
     @args = {}
-    @results = 'results'
+    @results = { :results => 'results' }
     @queue = 'incoming'
     @response_timeout = 5.minutes
     @queue_validity = 15.minutes
 
     @server = mock(Starling)
     @server.stub!(:set).and_return
-    @server.stub!(:get).and_return('results')
+    @server.stub!(:get).and_return(@results)
     Starling.stub!(:new).and_return(@server)
 
     @host = 'host'
     @client = Airbrush::Client.new(@host, @queue, @response_timeout, @queue_validity)
   end
 
-  describe Airbrush::Client, 'when created' do
+  describe 'when created' do
 
     it 'should support a configurable target memcache host' do
       @client.host.should == @host
@@ -41,7 +41,7 @@ describe Airbrush::Client, 'job management' do
 
   end
 
-  describe Airbrush::Client, 'job management' do
+  describe 'job management' do
 
     it 'should allow a job to be posted' do
       @client.should respond_to(:process)
@@ -53,7 +53,7 @@ describe Airbrush::Client, 'job management' do
 
   end
 
-  describe Airbrush::Client, 'a posted job' do
+  describe 'a posted job' do
 
     it 'should raise an error if the id is not valid' do
       lambda { @client.process(nil, @command, @args) }.should raise_error
