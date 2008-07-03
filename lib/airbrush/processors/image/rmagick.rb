@@ -4,6 +4,7 @@ module Airbrush
   module Processors
     module Image
       class Rmagick < ImageProcessor
+        filter_params :image # ignore any argument called 'image' in any logging
 
         def resize(image, width, height)
           load(image) do

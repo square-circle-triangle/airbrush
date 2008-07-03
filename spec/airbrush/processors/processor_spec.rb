@@ -15,7 +15,7 @@ describe Airbrush::Processors::Processor, 'abstract class' do
   end
 
   it 'should return an error from dispatch if the requested command is not implemented by the processor' do
-    @processor.dispatch(:blah, {}).should == { :exception => "ERROR: Received error during processor dispatch for command 'blah'", :message => 'Unknown processor operation blah ()' }
+    @processor.dispatch(:blah, {}).should == { :exception => "ERROR: Received error during processor dispatch for command 'blah' ()", :message => 'Unknown processor operation blah ()' }
   end
 
 end
@@ -63,7 +63,48 @@ describe Airbrush::Processors::Processor, 'error handling' do
 
   it 'should return an error from dispatch if the requested command raises an exception during processing' do
     @processor.should_receive(:my_action).and_raise(@error)
-    @processor.dispatch(:my_action, { :one => 'a', :two => 'b', :three => 'c' }).should == { :exception => "ERROR: Received error during processor dispatch for command 'my_action'", :message => @error }
+    @options = { :one => 'a', :two => 'b', :three => 'c' }
+    @processor.dispatch(:my_action, @options).should == { :exception => "ERROR: Received error during processor dispatch for command 'my_action' (#{@options.inspect})", :message => @error }
+  end
+
+end
+
+class FilteredProcessor < Airbrush::Processors::Processor
+  filter_params :password
+
+  def command(username, password); 'no op'; end
+end
+
+class ExtraFilteredProcessor < Airbrush::Processors::Processor
+  filter_params :username
+
+  def command(username, password); 'no_op'; end
+end
+
+describe Airbrush::Processors::Processor, 'filter definitions' do
+
+  before do
+    @processor1 = FilteredProcessor.new
+    @processor2 = ExtraFilteredProcessor.new
+  end
+
+  it 'should not override filters from other processors' do
+    @processor1.filtered_params.should == [ :password ]
+    @processor2.filtered_params.should == [ :username ]
+  end
+
+  describe 'filtering' do
+
+    before do
+      @params = { :username => 'username', :password => 'password' }
+    end
+
+    it 'should replace market parameter keys with a new value' do
+      { @processor1 => :password, @processor2 => :username }.each do |processor, filtered|
+        processor.send(:filter, @params).should == @params.update(filtered => '[FILTERED]')
+      end
+    end
+
   end
 
 end
