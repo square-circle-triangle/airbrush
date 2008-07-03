@@ -6,27 +6,30 @@ module Airbrush
       class Rmagick < ImageProcessor
 
         def resize(image, width, height)
-          img = load(image)
-          img.change_geometry("#{width}x#{height}") { |cols, rows, image| img.resize!(cols, rows) }
-          img.ensure_rgb!
-          img.format = 'JPEG' # ensure that resized output is a JPEG
-          img.to_blob
+          load(image) do
+            change_geometry("#{width}x#{height}") { |cols, rows, image| img.resize!(cols, rows) }
+            ensure_rgb!
+            format = 'JPEG' # ensure that resized output is a JPEG
+            to_blob
+          end
         end
 
         def crop(image, tl_x, tl_y, br_x, br_y)
-          img = load(image)
-          img.crop!(tl_x, tl_y, br_x, br_y)
-          img.ensure_rgb!
-          img.format = 'JPEG'
-          img.to_blob
+          load(image) do
+            crop!(tl_x, tl_y, br_x, br_y)
+            ensure_rgb!
+            format = 'JPEG'
+            to_blob
+          end
         end
 
         def crop_resize(image, width, height)
-          img = load(image)
-          img.crop_resized!(width, height)
-          img.ensure_rgb!
-          img.format = 'JPEG'
-          img.to_blob
+          load(image) do
+            crop_resized!(width, height)
+            ensure_rgb!
+            format = 'JPEG'
+            to_blob
+          end
         end
 
         def previews(image, sizes) # sizes => { :small => [200,100], :medium => [400,200], :large => [600,300] }
@@ -35,8 +38,9 @@ module Airbrush
 
         protected
 
-          def load(image)
+          def load(image, &block)
             img = Magick::Image.from_blob(image).first
+            img.instance_eval &block
           end
 
       end
