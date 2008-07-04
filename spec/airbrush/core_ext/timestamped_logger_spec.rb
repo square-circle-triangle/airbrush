@@ -16,5 +16,4 @@ describe ActiveSupport::BufferedLogger, 'log statements' do
     @target.readline.should == "#{@time}: #{@statement}\n"
   end
 
-
 end
