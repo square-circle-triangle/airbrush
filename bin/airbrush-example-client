@@ -51,7 +51,9 @@ raise "Source image does not exist: #{OPTIONS[:image]}" unless File.exists?(OPTI
 require 'airbrush'
 
 client = Airbrush::Client.new(OPTIONS[:memcache])
+puts "Sending #{OPTIONS[:image]} for preview processing"
 results = client.process('generate-previews', :previews, :image => File.read(OPTIONS[:image]), :filename => OPTIONS[:image], :sizes => {:small => [300], :large => [600]})
 results.each do |k,v|
-  File.open("#{OPTIONS[:output]}-#{k}.jpg", 'w') { |f| f << v }
+  File.open("#{OPTIONS[:output]}-#{k}.jpg", 'w') { |f| f << v[:image] }
+  puts "Saved preview #{OPTIONS[:output]}-#{k}.jpg (#{v[:width]}x#{v[:height]})" if OPTIONS[:verbose]
 end

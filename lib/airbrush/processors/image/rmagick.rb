@@ -39,7 +39,9 @@ module Airbrush
             img.instance_eval &block
             img.ensure_rgb!
             img.format = 'JPEG' # ensure that resized output is a JPEG
-            img.to_blob
+            {
+              :image => img.to_blob, :width => img.columns, :height => img.rows
+            }
           end
 
           def calculate_dimensions(image_data, size)
