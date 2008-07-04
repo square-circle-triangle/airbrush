@@ -29,7 +29,9 @@ module Airbrush
         end
 
         def previews(image, sizes) # sizes => { :small => [200,100], :medium => [400,200], :large => [600,300] }
-          sizes.inject(Hash.new) { |m, (k, v)| m[k] = crop_resize(image, *v); m }
+          images = sizes.inject(Hash.new) { |m, (k, v)| m[k] = crop_resize(image, *v); m }
+          images[:original] = dimensions(image)
+          images
         end
 
         protected
@@ -42,6 +44,11 @@ module Airbrush
             {
               :image => img.to_blob, :width => img.columns, :height => img.rows
             }
+          end
+
+          def dimensions(image)
+            image = Magick::Image.from_blob(image_data).first
+            return image.columns, image.rows
           end
 
           def calculate_dimensions(image_data, size)
