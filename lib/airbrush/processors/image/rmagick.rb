@@ -6,30 +6,25 @@ module Airbrush
       class Rmagick < ImageProcessor
         filter_params :image # ignore any argument called 'image' in any logging
 
-        def resize(image, width, height)
-          load(image) do
-            change_geometry("#{width}x#{height}") { |cols, rows, image| img.resize!(cols, rows) }
-            ensure_rgb!
-            format = 'JPEG' # ensure that resized output is a JPEG
-            to_blob
+        def resize(image, width, height = nil)
+          width, height = calculate_dimensions(image, width) unless height
+
+          process image do
+            change_geometry("#{width}x#{height}") { |cols, rows, image| image.resize!(cols, rows) }
           end
         end
 
         def crop(image, tl_x, tl_y, br_x, br_y)
-          load(image) do
+          process image do
             crop!(tl_x, tl_y, br_x, br_y)
-            ensure_rgb!
-            format = 'JPEG'
-            to_blob
           end
         end
 
-        def crop_resize(image, width, height)
-          load(image) do
+        def crop_resize(image, width, height = nil)
+          width, height = calculate_dimensions(image, width) unless height
+
+          process image do
             crop_resized!(width, height)
-            ensure_rgb!
-            format = 'JPEG'
-            to_blob
           end
         end
 
@@ -39,9 +34,39 @@ module Airbrush
 
         protected
 
-          def load(image, &block)
+          def process(image, &block)
             img = Magick::Image.from_blob(image).first
             img.instance_eval &block
+            img.ensure_rgb!
+            img.format = 'JPEG' # ensure that resized output is a JPEG
+            img.to_blob
+          end
+
+          def calculate_dimensions(image_data, size)
+            image = Magick::Image.from_blob(image_data).first
+            return image.columns, image.rows if clipping_required?(image, size)
+
+            ratio = image.columns.to_f / image.rows.to_f
+
+            portrait image do
+              return [ size, size.to_f / ratio ]
+            end
+
+            landscape image do
+              return [ ratio * size, size ]
+            end
+          end
+
+          def clipping_required?(image, size)
+            size > image.columns or size > image.rows
+          end
+
+          def portrait(image, &block)
+            block.call if image.columns > image.rows
+          end
+
+          def landscape(image, &block)
+            block.call if image.columns < image.rows
           end
 
       end
