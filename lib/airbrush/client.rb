@@ -48,5 +48,6 @@ module Airbrush
       def format_error(response)
         "#{response[:exception]}: #{response[:message]}"
       end
+
   end
 end
