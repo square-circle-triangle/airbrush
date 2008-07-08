@@ -46,7 +46,7 @@ module Airbrush
             }
           end
 
-          def dimensions(image)
+          def dimensions(image_data)
             image = Magick::Image.from_blob(image_data).first
             return image.columns, image.rows
           end

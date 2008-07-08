@@ -47,7 +47,7 @@ describe Airbrush::Processors::Image::Rmagick do
 
     it 'should return the raw image data back to the caller' do
       @rm_image.should_receive(:to_blob).and_return('blob')
-      @processor.resize(@image, 300, 200).should == 'blob'
+      @processor.resize(@image, 300, 200).should == { :image => "blob", :height => 1000, :width => 1500 }
     end
 
   end
@@ -70,7 +70,7 @@ describe Airbrush::Processors::Image::Rmagick do
 
     it 'should return the raw image data back to the caller' do
       @rm_image.should_receive(:to_blob).and_return('blob')
-      @processor.crop(@image, 10, 10, 100, 100).should == 'blob'
+      @processor.crop(@image, 10, 10, 100, 100).should == { :image => "blob", :height => 1000, :width => 1500 }
     end
 
   end
@@ -93,7 +93,7 @@ describe Airbrush::Processors::Image::Rmagick do
 
     it 'should return the raw image data back to the caller' do
       @rm_image.should_receive(:to_blob).and_return('blob')
-      @processor.crop_resize(@image, 75, 75).should == 'blob'
+      @processor.crop_resize(@image, 75, 75).should == { :image => "blob", :height => 1000, :width => 1500 }
     end
 
   end
@@ -107,7 +107,7 @@ describe Airbrush::Processors::Image::Rmagick do
 
     it 'should return the raw image data back to the caller' do
       @rm_image.should_receive(:to_blob).twice.and_return('blob')
-      @processor.previews(@image, { :small => [200,100], :large => [500,250] }).should == { :small => 'blob', :large => 'blob'}
+      @processor.previews(@image, { :small => [200,100], :large => [500,250] }).should == { :small=> { :image => "blob", :height => 1000, :width => 1500 }, :large=> { :image => "blob", :height => 1000, :width => 1500 }, :original => [1500, 1000] }
     end
 
   end
