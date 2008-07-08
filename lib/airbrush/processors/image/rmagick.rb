@@ -48,7 +48,7 @@ module Airbrush
 
           def dimensions(image_data)
             image = Magick::Image.from_blob(image_data).first
-            return image.columns, image.rows
+            return [image.columns, image.rows]
           end
 
           def calculate_dimensions(image_data, size)
