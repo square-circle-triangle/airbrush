@@ -22,7 +22,7 @@ module Airbrush
 
         def crop_resize(image, width, height = nil)
           width, height = calculate_dimensions(image, width) unless height
-
+          
           process image do
             crop_resized!(width, height)
           end
@@ -64,6 +64,9 @@ module Airbrush
             landscape image do
               return [ ratio * size, size ]
             end
+            
+            # Must be a square image.
+            return [ size, size ]
           end
 
           def clipping_required?(image, size)
