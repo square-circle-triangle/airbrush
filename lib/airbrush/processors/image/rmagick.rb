@@ -53,32 +53,19 @@ module Airbrush
 
           def calculate_dimensions(image_data, size)
             image = Magick::Image.from_blob(image_data).first
-            return image.columns, image.rows if clipping_required?(image, size)
+            return image.columns, image.rows unless clipping_required?(image, size)
 
             ratio = image.columns.to_f / image.rows.to_f
 
-            portrait image do
-              return [ size, size.to_f / ratio ]
-            end
-
-            landscape image do
-              return [ ratio * size, size ]
-            end
+            return [ size, size.to_f / ratio ] if ratio > 1 # landscape
             
-            # Must be a square image.
-            return [ size, size ]
+            return [ ratio * size, size ] if ratio < 1      # Portrait
+            
+            return [ size, size ]                           # Square
           end
 
           def clipping_required?(image, size)
-            size > image.columns or size > image.rows
-          end
-
-          def portrait(image, &block)
-            block.call if image.columns > image.rows
-          end
-
-          def landscape(image, &block)
-            block.call if image.columns < image.rows
+            (image.columns > size) || (image.rows > size)
           end
 
       end
