@@ -1,7 +1,7 @@
 require 'airbrush/version'
 
-AUTHOR = 'FIXME full name'  # can also be an array of Authors
-EMAIL = "FIXME email"
+AUTHOR = ['Marcus Crafter', 'Nick Marfleet']  # can also be an array of Authors
+EMAIL = "crafterm@redartisan.com"
 DESCRIPTION = "description of gem"
 GEM_NAME = 'airbrush' # what ppl will type to install your gem
 RUBYFORGE_PROJECT = 'airbrush' # The unix name for your project
