@@ -36,6 +36,14 @@ module Airbrush
           images[:original] = dimensions(image)
           images
         end
+        
+        
+        def resized_crop_mask(image, crop, size)
+          process image do
+            resize!(size[:width], size[:height])
+            crop!(crop[:x], crop[:y], crop[:width], crop[:height])
+          end
+        end
 
         protected
 
