@@ -51,9 +51,30 @@ raise "Source image does not exist: #{OPTIONS[:image]}" unless File.exists?(OPTI
 require 'airbrush'
 
 client = Airbrush::Client.new(OPTIONS[:memcache])
-puts "Sending #{OPTIONS[:image]} for preview processing"
+puts "Sending #{OPTIONS[:image]} for processing"
+
+# previews..
 results = client.process('generate-previews', :previews, :image => File.read(OPTIONS[:image]), :filename => OPTIONS[:image], :sizes => {:small => [300], :large => [600]})
+
 results.each do |k,v|
-  File.open("#{OPTIONS[:output]}-#{k}.jpg", 'w') { |f| f << v[:image] }
-  puts "Saved preview #{OPTIONS[:output]}-#{k}.jpg (#{v[:width]}x#{v[:height]})" if OPTIONS[:verbose]
-end
+   next if k == :original
+   puts v[:format].inspect
+   File.open("#{OPTIONS[:output]}-#{k}.jpg", 'w') { |f| f << v[:image] }
+   puts "Saved preview #{OPTIONS[:output]}-#{k}.jpg (#{v[:width]}x#{v[:height]})" if OPTIONS[:verbose]
+ end
+
+# Exif data..
+results = client.process('exif',:exif_data, :image => File.read(OPTIONS[:image]))
+puts results.inspect
+
+# resized_crop_mask..
+results = client.process('crop-and-resize', 
+                           :resized_crop_mask, 
+                           :image => File.read(OPTIONS[:image]), 
+                           :filename => OPTIONS[:image], 
+                           :crop => {:x => 0, :y => 0, :width => 800, :height => 800 },
+                           :size => { :width => 2890, :height => 1940 })
+
+File.open("#{OPTIONS[:output]}.jpg", 'w'){|f| f << results[:image] }
+puts "Saved resized image #{OPTIONS[:output]}.jpg" if OPTIONS[:verbose]
+
