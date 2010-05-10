@@ -37,6 +37,10 @@ module Airbrush
           images
         end
         
+        def exif_data(image)
+          data = Magick::Image.from_blob(image).first.get_exif_by_entry
+          data.inject({}) { |m, exif_entry| m[exif_entry[0]] = exif_entry[1]; m }
+        end
         
         def resized_crop_mask(image, crop, size)
           process image do
