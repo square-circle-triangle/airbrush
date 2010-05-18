@@ -4,6 +4,9 @@ module Airbrush
   module Processors
     module Image
       class Rmagick < ImageProcessor
+        
+        VALID_OUTPUT_FORMATS = ['JPEG', 'PNG', 'JPG', 'GIF']
+        
         filter_params :image # ignore any argument called 'image' in any logging
 
         def resize(image, width, height = nil)
@@ -33,6 +36,18 @@ module Airbrush
           images[:original] = dimensions(image)
           images
         end
+        
+        def exif_data(image)
+          data = Magick::Image.from_blob(image).first.get_exif_by_entry
+          data.inject({}) { |m, exif_entry| m[exif_entry[0]] = exif_entry[1]; m }
+        end
+        
+        def resized_crop_mask(image, crop, size)
+          process image do
+            resize!(size[:width], size[:height])
+            crop!(crop[:x], crop[:y], crop[:width], crop[:height])
+          end
+        end
 
         protected
 
@@ -40,10 +55,15 @@ module Airbrush
             img = Magick::Image.from_blob(image).first
             img.instance_eval &block
             img.ensure_rgb!
-            img.format = 'JPEG' # ensure that resized output is a JPEG
+            img.format = get_format(image) # ensure that resized output is a JPEG
             {
-              :image => img.to_blob, :width => img.columns, :height => img.rows
+              :image => img.to_blob, :width => img.columns, :height => img.rows, :format => img.format
             }
+          end
+          
+          def get_format(image_data)
+            current_format = Magick::Image.from_blob(image_data).first.format
+            VALID_OUTPUT_FORMATS.include?(current_format) ? current_format : 'JPEG'
           end
 
           def dimensions(image_data)

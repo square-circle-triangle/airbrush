@@ -1,8 +1,8 @@
 require 'airbrush/version'
 
-AUTHOR = 'FIXME full name'  # can also be an array of Authors
-EMAIL = "FIXME email"
-DESCRIPTION = "description of gem"
+AUTHOR = ['Marcus Crafter', 'Nick Marfleet']  # can also be an array of Authors
+EMAIL = "nick@whatevernext.org"
+DESCRIPTION = "Distributed image processing server."
 GEM_NAME = 'airbrush' # what ppl will type to install your gem
 RUBYFORGE_PROJECT = 'airbrush' # The unix name for your project
 HOMEPATH = "http://#{RUBYFORGE_PROJECT}.rubyforge.org"
@@ -10,7 +10,7 @@ DOWNLOAD_PATH = "http://rubyforge.org/projects/#{RUBYFORGE_PROJECT}"
 
 @config_file = "~/.rubyforge/user-config.yml"
 @config = nil
-RUBYFORGE_USERNAME = "unknown"
+RUBYFORGE_USERNAME = "nickm"
 def rubyforge_username
   unless @config
     begin
