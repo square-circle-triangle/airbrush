@@ -1,16 +1,16 @@
 require 'ruby2ruby'
-require 'parse_tree'
+require 'ruby_parser'
 
 class ParseTreeArray < Array #:nodoc:
   def self.translate(*args)
-    sexp = ::ParseTree.translate(*args)
+    sexp = ::RubyParser.new.parse(*args)
     # ParseTree.translate returns [nil] if called on an inherited method, so walk
     # up the inheritance chain to find the class that the method was defined in
     unless sexp.first
       klass = args.first.ancestors.detect do |klass|
         klass.public_instance_methods(false).include?(args.last.to_s)
       end
-      sexp = ::ParseTree.translate(klass, args.last) if klass
+      sexp = ::RubyParser.new.parse(klass, args.last) if klass
     end
     self.new(sexp)
   end
