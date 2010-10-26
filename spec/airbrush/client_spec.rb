@@ -9,8 +9,8 @@ describe Airbrush::Client, 'job management' do
     @args = {}
     @results = { :results => 'results' }
     @queue = 'incoming'
-    @response_timeout = 5.minutes
-    @queue_validity = 15.minutes
+    @response_timeout = 300
+    @queue_validity = 900
 
     @server = mock(Starling)
     @server.stub!(:set).and_return

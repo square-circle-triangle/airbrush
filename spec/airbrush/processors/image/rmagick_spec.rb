@@ -118,20 +118,20 @@ describe Airbrush::Processors::Image::Rmagick do
     
     it 'should return an image with the specified sizes' do
       @processor.resized_crop_mask(@image, {:x => 0, :y => 0, :width => 800, :height => 800 }, { :width => 2890, :height => 1940 }).should == {
-      	:format => "JPEG", :image => "blob", :width => 1500, :height => 1000}
+        :format => "JPEG", :image => "blob", :width => 1500, :height => 1000}
       
     end
     
     it 'should return an image cropped to the crop marks' do
       @rm_image.should_receive(:crop!).with(0,20,800,900).once
       @processor.resized_crop_mask(@image, {:x => 0, :y => 20, :width => 800, :height => 900 }, { :width => 2890, :height => 1940 }).should == {
-      	:format => "JPEG", :image => "blob", :width => 1500, :height => 1000}
+        :format => "JPEG", :image => "blob", :width => 1500, :height => 1000}
     end 
 
     it 'should return the raw image data back to the caller' do
       @rm_image.should_receive(:resize!).with(2890,1940).once
       @processor.resized_crop_mask(@image, {:x => 0, :y => 0, :width => 800, :height => 800 }, { :width => 2890, :height => 1940 }).should == {
-      	:format => "JPEG", :image => "blob", :width => 1500, :height => 1000}
+        :format => "JPEG", :image => "blob", :width => 1500, :height => 1000}
     end  
   end
   
@@ -143,20 +143,20 @@ describe Airbrush::Processors::Image::Rmagick do
   end
    
   describe "get_format" do
-	
-	Airbrush::Processors::Image::Rmagick::VALID_OUTPUT_FORMATS.each do |valid_format|
-	  	it "should not change the image format if it is a #{valid_format}" do
-			@rm_image.should_receive(:format).and_return(valid_format)
-			@processor.send(:get_format, @rm_image).should == valid_format
-		end
-	end
+  
+  Airbrush::Processors::Image::Rmagick::VALID_OUTPUT_FORMATS.each do |valid_format|
+      it "should not change the image format if it is a #{valid_format}" do
+      @rm_image.should_receive(:format).and_return(valid_format)
+      @processor.send(:get_format, @rm_image).should == valid_format
+    end
+  end
 
-	it "should change the format to JPEG if a non valid return format is found" do
-		['TIF', 'TIFF', 'PDF'].each do |bad_format|
-			@rm_image.should_receive(:format).and_return(bad_format)
-			@processor.send(:get_format, @rm_image).should == 'JPEG' 
-		end
-	end
+  it "should change the format to JPEG if a non valid return format is found" do
+    ['TIF', 'TIFF', 'PDF'].each do |bad_format|
+      @rm_image.should_receive(:format).and_return(bad_format)
+      @processor.send(:get_format, @rm_image).should == 'JPEG' 
+    end
+  end
   end
 
 
