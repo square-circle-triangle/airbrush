@@ -1,7 +1,7 @@
 require 'airbrush/version'
 
 AUTHOR = ['Marcus Crafter', 'Nick Marfleet']  # can also be an array of Authors
-EMAIL = "nick@whatevernext.org"
+EMAIL = "nickmarfleet@gmail.com"
 DESCRIPTION = "Distributed image processing server."
 GEM_NAME = 'airbrush' # what ppl will type to install your gem
 RUBYFORGE_PROJECT = 'airbrush' # The unix name for your project
@@ -59,7 +59,7 @@ hoe = Hoe.new(GEM_NAME, VERS) do |p|
   
   # == Optional
   p.changes = p.paragraphs_of("History.txt", 0..1).join("\n\n")
-  p.extra_deps = [ [ 'starling', '>= 0.9.3' ], [ 'activesupport', '>= 2.0.2' ], [ 'ruby2ruby', '>= 1.1.8' ], [ 'daemons', '>= 1.0.9' ] ]     # An array of rubygem dependencies [name, version], e.g. [ ['active_support', '>= 1.3.1'] ]
+  p.extra_deps = [ [ 'starling', '= 0.9.8' ], [ 'activesupport', '~> 2.3.10' ], [ 'ruby2ruby', '= 1.2.1' ], [ 'daemons', '= 1.0.10' ] ]     # An array of rubygem dependencies [name, version], e.g. [ ['active_support', '>= 1.3.1'] ]
   
   #p.spec_extras = {}    # A hash of extra values to set in the gemspec.
   

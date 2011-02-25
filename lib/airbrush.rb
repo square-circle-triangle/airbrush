@@ -4,7 +4,7 @@ $:.unshift File.dirname(__FILE__)
 require 'rubygems'
 require 'active_support'
 
-ActiveSupport::Dependencies.load_paths << File.dirname(__FILE__)
+ActiveSupport::Dependencies.autoload_paths << File.dirname(__FILE__)
 
 # for the moment lets log dependency loading
 #Dependencies::RAILS_DEFAULT_LOGGER = Logger.new($stdout)
