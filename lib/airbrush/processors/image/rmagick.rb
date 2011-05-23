@@ -45,7 +45,7 @@ module Airbrush
         def resized_crop_mask(image, crop, size)
           process image do
             resize!(size[:width], size[:height])
-            crop!(crop[:x], crop[:y], crop[:width], crop[:height])
+            crop!(crop[:x], crop[:y], crop[:width], crop[:height], true) # pass true to clear offset info
           end
         end
 
