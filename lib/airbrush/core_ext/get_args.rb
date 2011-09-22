@@ -1,11 +1,11 @@
+require 'live_ast'
 require 'ruby2ruby'
-require 'parse_tree'
 
 class ParseTreeArray < Array #:nodoc:
   def self.translate(*args)
-    sexp = ::ParseTree.translate(*args)
-    # ParseTree.translate returns [nil] if called on an inherited method, so walk
-    # up the inheritance chain to find the class that the method was defined in
+    clazz, methd = *args
+    sexp = clazz.instance_method(methd).to_ast
+
     unless sexp.first
       klass = args.first.ancestors.detect do |klass|
         klass.public_instance_methods(false).include?(args.last.to_s)
