@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{airbrush}
-  s.version = "0.0.5.pre7"
+  s.version = "0.0.5.pre8"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Marcus Crafter", "Nick Marfleet"]
@@ -90,8 +90,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency(%q<hpricot>, [">= 0"])
   s.add_runtime_dependency(%q<curb>, [">= 0"])
   s.add_runtime_dependency(%q<live_ast>)
-  s.add_runtime_dependency(%q<starling>)
-  s.add_runtime_dependency(%q<rmagick>) 
+  #s.add_runtime_dependency(%q<starling>)
   s.add_development_dependency(%q<rspec>, [">= 1.2.9"])
 end
 
