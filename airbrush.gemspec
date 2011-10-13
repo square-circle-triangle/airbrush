@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{airbrush}
-  s.version = "0.0.5.pre6"
+  s.version = "0.0.5.pre7"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Marcus Crafter", "Nick Marfleet"]
@@ -29,7 +29,7 @@ Gem::Specification.new do |s|
      "lib/airbrush.rb",
      "lib/airbrush/client.rb",
      "lib/airbrush/core_ext/get_args.rb",
-     "lib/airbrush/core_ext/timestamped_logger.rb",
+     "lib/airbrush/core_ext/object_logger.rb",
      "lib/airbrush/handler.rb",
      "lib/airbrush/listeners/listener.rb",
      "lib/airbrush/listeners/memcache.rb",
