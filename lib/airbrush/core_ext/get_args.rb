@@ -10,7 +10,7 @@ class ParseTreeArray < Array #:nodoc:
       klass = args.first.ancestors.detect do |klass|
         klass.public_instance_methods(false).include?(args.last.to_s)
       end
-      sexp = ::ParseTree.translate(klass, args.last) if klass
+      sexp = klass.instance_method(args.last).to_ast if klass
     end
     self.new(sexp)
   end
@@ -47,7 +47,7 @@ class ParseTreeArray < Array #:nodoc:
 
     lasgns = default_node[1..-1]
     lasgns.each do |asgn|
-      args.assoc(asgn[1]) << eval(RubyToRuby.new.process(asgn[2]))
+      args.assoc(asgn[1]) << eval(Ruby2Ruby.new.process(asgn[2]))
     end
     args
   end

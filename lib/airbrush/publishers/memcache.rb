@@ -20,5 +20,3 @@ module Airbrush
     end
   end
 end
-
-# resize the dnssd or command line gear in listeners?

@@ -123,7 +123,7 @@ describe Airbrush::Processors::Image::Rmagick do
     end
     
     it 'should return an image cropped to the crop marks' do
-      @rm_image.should_receive(:crop!).with(0,20,800,900).once
+      @rm_image.should_receive(:crop!).with(0,20,800,900, true).once
       @processor.resized_crop_mask(@image, {:x => 0, :y => 20, :width => 800, :height => 900 }, { :width => 2890, :height => 1940 }).should == {
       	:format => "JPEG", :image => "blob", :width => 1500, :height => 1000}
     end 

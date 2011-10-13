@@ -1,8 +1,10 @@
 $:.unshift File.dirname(__FILE__)
 
 # required gems
-require 'rubygems'
 require 'active_support'
+require 'active_support/dependencies'
+require 'active_support/time'
+require 'active_support/core_ext'
 
 ActiveSupport::Dependencies.autoload_paths << File.dirname(__FILE__)
 
@@ -17,14 +19,17 @@ module Airbrush
 end
 
 class Object
-  def log
-    @@__log__ ||= __create_logger__($stdout)
+  def log(out=$stdout)
+     @@logger ||= __create_logger__(out)
   end
 
   private
 
     def __create_logger__(target)
-      @@__log__ = ActiveSupport::BufferedLogger.new(target, ActiveSupport::BufferedLogger::Severity::INFO)
+      @@logger = Logger.new(target)
+      @@logger.level = Logger::INFO
+      @@logger.formatter = Logger::Formatter.new
+      @@logger
     end
 
 end
